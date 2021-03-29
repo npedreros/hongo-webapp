@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 // nodejs library that concatenates classes
 import classNames from "classnames";
 // react plugin used to create charts
@@ -32,12 +32,33 @@ import {
   chartExample3,
   chartExample4,
 } from "variables/charts.js";
+import fire from "../firebase";
 
 function Dashboard(props) {
   const [bigChartData, setbigChartData] = React.useState("data1");
   const setBgChartData = (name) => {
     setbigChartData(name);
   };
+
+  const [data, setData] = useState([]);
+
+  const ref = fire.firestore().collection("primerPiso");
+
+  const getData = () => {
+    ref.onSnapshot((querySnapshot) => {
+      const items = [];
+      querySnapshot.forEach((doc) => {
+        items.push(doc.data());
+      });
+      setData(items);
+    });
+  };
+
+  console.log(data);
+
+  useEffect(() => {
+    getData();
+  }, []);
   return (
     <>
       <div className="content">
