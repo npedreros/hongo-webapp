@@ -54,7 +54,7 @@ const App = () => {
         }
       });
   };
-
+/*
   const hanldeSingUp = () => {
     clearErrors();
     fire
@@ -76,7 +76,7 @@ const App = () => {
         }
       });
   };
-
+*/
   const handleLogout = () => {
     fire
       .auth()

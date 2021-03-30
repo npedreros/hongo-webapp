@@ -1,5 +1,4 @@
-import React, { useState, useEffect} from "react";
-import fire from '../firebase';
+import React from "react";
 // reactstrap components
 import {
   FormGroup,
@@ -9,7 +8,6 @@ import {
   Button,
   Card,
   CardBody,
-  Row,
   Col
 } from "reactstrap";
 
@@ -20,10 +18,7 @@ function Login(props) {
   password,
   setPassword,
   hanldeLogin,
-  hasAccount,
-  setHasAccount,
   emailError,
-  passwordError,
  } = props;
   return (
     <div className="login-center">

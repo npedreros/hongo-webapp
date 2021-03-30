@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 // nodejs library that concatenates classes
 import classNames from "classnames";
 // react plugin used to create charts
@@ -27,7 +27,6 @@ import {
 
 // core components
 import {
-  chartExample1,
   chartExample2,
   chartExample3,
   chartExample4,
@@ -54,11 +53,113 @@ function Dashboard(props) {
     });
   };
 
-  console.log(data);
-
   useEffect(() => {
     getData();
   }, []);
+
+  const dateList = data.map((element) => {
+    const { Fecha: { seconds = 0 } = {} } = element;
+    const dateObject = new Date(seconds * 1000);
+    const humanDateFormat = [dateObject.toLocaleString()];
+
+    return humanDateFormat;
+  });
+
+  const dateGas = data.map((element) => {
+    var { Gas = 0 } = element;
+    var data = Gas.toString();
+    return data;
+  });
+
+  const ListGrafic = () => {
+    let chart1_2_options = {
+      maintainAspectRatio: false,
+      legend: {
+        display: false,
+      },
+      tooltips: {
+        backgroundColor: "#f5f5f5",
+        titleFontColor: "#333",
+        bodyFontColor: "#666",
+        bodySpacing: 4,
+        xPadding: 12,
+        mode: "nearest",
+        intersect: 0,
+        position: "nearest",
+      },
+      responsive: true,
+      scales: {
+        yAxes: [
+          {
+            barPercentage: 1.6,
+            gridLines: {
+              drawBorder: false,
+              color: "rgba(29,140,248,0.0)",
+              zeroLineColor: "transparent",
+            },
+            ticks: {
+              suggestedMin: 60,
+              suggestedMax: 125,
+              padding: 20,
+              fontColor: "#9a9a9a",
+            },
+          },
+        ],
+        xAxes: [
+          {
+            barPercentage: 1.6,
+            gridLines: {
+              drawBorder: false,
+              color: "rgba(29,140,248,0.1)",
+              zeroLineColor: "transparent",
+            },
+            ticks: {
+              padding: 20,
+              fontColor: "#9a9a9a",
+            },
+          },
+        ],
+      },
+    };
+
+    var chartExample1 = {
+      data1: (canvas) => {
+        var ctx = canvas.getContext("2d");
+
+        var gradientStroke = ctx.createLinearGradient(0, 230, 0, 50);
+
+        gradientStroke.addColorStop(1, "rgba(29,140,248,0.2)");
+        gradientStroke.addColorStop(0.4, "rgba(29,140,248,0.0)");
+        gradientStroke.addColorStop(0, "rgba(29,140,248,0)"); //blue colors
+
+        return {
+          labels: dateList,
+          datasets: [
+            {
+              label: "Nivel de gas",
+              fill: true,
+              backgroundColor: gradientStroke,
+              borderColor: "#1f8ef1",
+              borderWidth: 2,
+              borderDash: [],
+              borderDashOffset: 0.0,
+              pointBackgroundColor: "#1f8ef1",
+              pointBorderColor: "rgba(255,255,255,0)",
+              pointHoverBackgroundColor: "#1f8ef1",
+              pointBorderWidth: 20,
+              pointHoverRadius: 4,
+              pointHoverBorderWidth: 15,
+              pointRadius: 4,
+              data: dateGas,
+            },
+          ],
+        };
+      },
+    };
+
+    return <Line data={chartExample1["data1"]} options={chart1_2_options} />;
+  };
+
   return (
     <>
       <div className="content">
@@ -69,7 +170,7 @@ function Dashboard(props) {
                 <Row>
                   <Col className="text-left" sm="6">
                     <h5 className="card-category">Total Shipments</h5>
-                    <CardTitle tag="h2">Performance</CardTitle>
+                    <CardTitle tag="h2">Graficas</CardTitle>
                   </Col>
                   <Col sm="6">
                     <ButtonGroup
@@ -87,7 +188,7 @@ function Dashboard(props) {
                         onClick={() => setBgChartData("data1")}
                       >
                         <span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
-                          Accounts
+                          Gas
                         </span>
                         <span className="d-block d-sm-none">
                           <i className="tim-icons icon-single-02" />
@@ -132,11 +233,8 @@ function Dashboard(props) {
                 </Row>
               </CardHeader>
               <CardBody>
-                <div className="chart-area">
-                  <Line
-                    data={chartExample1[bigChartData]}
-                    options={chartExample1.options}
-                  />
+                <div className="chart-area" style={{ height: "70vh" }}>
+                  {ListGrafic()}
                 </div>
               </CardBody>
             </Card>
