@@ -34,7 +34,8 @@ import {
 import fire from "../firebase";
 
 function Dashboard(props) {
-  const [bigChartData, setbigChartData] = React.useState("data1");
+  const [bigChartData, setbigChartData] = useState("gas");
+  const [chartData, sethartData] = useState("data1");
   const setBgChartData = (name) => {
     setbigChartData(name);
   };
@@ -71,12 +72,27 @@ function Dashboard(props) {
     return data;
   });
 
+  const dateTemperatura = data.map((element) => {
+    var { Temperatura = 0 } = element;
+    var data = Temperatura.toString();
+    return data;
+  });
+
+  const dateHumedadAmb = data.map((element) => {
+    var { HumedadAmb = 0 } = element;
+    var data = HumedadAmb.toString();
+    return data;
+  });
+
+  const dateHumedadSuelo = data.map((element) => {
+    var { HumedadSuelo = 0 } = element;
+    var data = HumedadSuelo.toString();
+    return data;
+  });
+
   const ListGrafic = () => {
     let chart1_2_options = {
-      maintainAspectRatio: false,
-      legend: {
-        display: false,
-      },
+     
       tooltips: {
         backgroundColor: "#f5f5f5",
         titleFontColor: "#333",
@@ -98,23 +114,20 @@ function Dashboard(props) {
               zeroLineColor: "transparent",
             },
             ticks: {
-              suggestedMin: 60,
-              suggestedMax: 125,
-              padding: 20,
+              
               fontColor: "#9a9a9a",
             },
           },
         ],
         xAxes: [
           {
-            barPercentage: 1.6,
+            
             gridLines: {
               drawBorder: false,
               color: "rgba(29,140,248,0.1)",
               zeroLineColor: "transparent",
             },
             ticks: {
-              padding: 20,
               fontColor: "#9a9a9a",
             },
           },
@@ -131,12 +144,30 @@ function Dashboard(props) {
         gradientStroke.addColorStop(1, "rgba(29,140,248,0.2)");
         gradientStroke.addColorStop(0.4, "rgba(29,140,248,0.0)");
         gradientStroke.addColorStop(0, "rgba(29,140,248,0)"); //blue colors
-
+        
+        //Validador de datos
+        const dataList =
+          bigChartData === "gas"
+            ? dateGas
+            : bigChartData === "Temperatura"
+            ? dateTemperatura
+            : bigChartData === "HumedadAmb"
+            ? dateHumedadAmb
+            : dateHumedadSuelo;
+        //Validador de descripcion de datos
+        const dataLabel =
+          bigChartData === "gas"
+            ? "Nivel de gas"
+            : bigChartData === "Temperatura"
+            ? "Grados"
+            : bigChartData === "HumedadAmb"
+            ? "Humedad"
+            : "Humedad del suelo";
         return {
           labels: dateList,
           datasets: [
             {
-              label: "Nivel de gas",
+              label: dataLabel,
               fill: true,
               backgroundColor: gradientStroke,
               borderColor: "#1f8ef1",
@@ -150,7 +181,7 @@ function Dashboard(props) {
               pointHoverRadius: 4,
               pointHoverBorderWidth: 15,
               pointRadius: 4,
-              data: dateGas,
+              data: dataList,
             },
           ],
         };
@@ -172,7 +203,7 @@ function Dashboard(props) {
                     <h5 className="card-category">Total Shipments</h5>
                     <CardTitle tag="h2">Graficas</CardTitle>
                   </Col>
-                  <Col sm="6">
+                  <Col sm="12">
                     <ButtonGroup
                       className="btn-group-toggle float-right"
                       data-toggle="buttons"
@@ -180,12 +211,12 @@ function Dashboard(props) {
                       <Button
                         tag="label"
                         className={classNames("btn-simple", {
-                          active: bigChartData === "data1",
+                          active: bigChartData === "gas",
                         })}
                         color="info"
                         id="0"
                         size="sm"
-                        onClick={() => setBgChartData("data1")}
+                        onClick={() => setBgChartData("gas")}
                       >
                         <span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
                           Gas
@@ -200,12 +231,12 @@ function Dashboard(props) {
                         size="sm"
                         tag="label"
                         className={classNames("btn-simple", {
-                          active: bigChartData === "data2",
+                          active: bigChartData === "Temperatura",
                         })}
-                        onClick={() => setBgChartData("data2")}
+                        onClick={() => setBgChartData("Temperatura")}
                       >
                         <span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
-                          Purchases
+                          Temperatura
                         </span>
                         <span className="d-block d-sm-none">
                           <i className="tim-icons icon-gift-2" />
@@ -217,12 +248,29 @@ function Dashboard(props) {
                         size="sm"
                         tag="label"
                         className={classNames("btn-simple", {
-                          active: bigChartData === "data3",
+                          active: bigChartData === "HumedadAmb",
                         })}
-                        onClick={() => setBgChartData("data3")}
+                        onClick={() => setBgChartData("HumedadAmb")}
                       >
                         <span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
-                          Sessions
+                          Humedad del ambiente
+                        </span>
+                        <span className="d-block d-sm-none">
+                          <i className="tim-icons icon-tap-02" />
+                        </span>
+                      </Button>
+                      <Button
+                        color="info"
+                        id="3"
+                        size="sm"
+                        tag="label"
+                        className={classNames("btn-simple", {
+                          active: bigChartData === "HumedadSuelo",
+                        })}
+                        onClick={() => setBgChartData("HumedadSuelo")}
+                      >
+                        <span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
+                          Humedad del suelo
                         </span>
                         <span className="d-block d-sm-none">
                           <i className="tim-icons icon-tap-02" />
