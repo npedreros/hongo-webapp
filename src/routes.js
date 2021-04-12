@@ -2,12 +2,12 @@ import Dashboard from "views/Dashboard.js";
 import Notifications from "views/Notifications.js";
 import TableList from "views/TableList.js";
 import UserProfile from "views/UserProfile.js";
+import Registro from "views/Registro.js";
 
 var routes = [
   {
     path: "/dashboard",
     name: "Inicio",
-    rtlName: "لوحة القيادة",
     icon: "tim-icons icon-chart-pie-36",
     component: Dashboard,
     layout: "/admin",
@@ -15,11 +15,28 @@ var routes = [
   {
     path: "/notifications",
     name: "Notificaciones",
-    rtlName: "إخطارات",
     icon: "tim-icons icon-bell-55",
     component: Notifications,
     layout: "/admin",
   },
+
+  {
+    path: "/user-profile",
+    name: "Usuarios",
+    icon: "tim-icons icon-single-02",
+    component: UserProfile,
+    layout: "/admin",
+  },
+
+  {
+    path: "/registro",
+    name: "Registro de usuarios",
+    icon: "tim-icons icon-single-02",
+    component: Registro,
+    layout: "/admin",
+  }
+  
+  /*
   {
     path: "/user-profile",
     name: "Perfil de Usuario",
@@ -28,6 +45,7 @@ var routes = [
     component: UserProfile,
     layout: "/admin",
   },
+  
   {
     path: "/tables",
     name: "Lista de tablas",
@@ -35,6 +53,6 @@ var routes = [
     icon: "tim-icons icon-puzzle-10",
     component: TableList,
     layout: "/admin",
-  },
+  },*/
 ];
 export default routes;
