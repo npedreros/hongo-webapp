@@ -1,11 +1,22 @@
-import React from "react";
+import classNames from "classnames";
+import React, { useState, useEffect } from "react";
+
+import {
+  chartExample2,
+  chartExample3,
+  chartExample4,
+} from "variables/charts.js";
+import fire from "../firebase";
 
 // reactstrap components
 import {
   Button,
+  ButtonGroup,
   Card,
   CardHeader,
   CardBody,
+  CardTitle,
+  Table,
   CardFooter,
   CardText,
   FormGroup,
@@ -16,177 +27,110 @@ import {
 } from "reactstrap";
 
 function UserProfile() {
+
+  const [data, setData] = useState([]);
+
+  const ref = fire.firestore().collection("Proyectos");
+  const ref2 = fire.firestore().collection("Usuarios");
+  
+  const getData = () => {
+    ref.onSnapshot((querySnapshot) => {
+      const items = [];
+      querySnapshot.forEach((doc) => {
+        items.push(doc.data());
+      });
+      setData(items);
+    });
+
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const size = data.length + 1;
+  console.log(size)
+
+  const dateAdmin = data.slice(size-2,size).map((element) => {
+    var { Administrador = 0 } = element;
+    var data = Administrador.toString();
+    return data;
+  });
+
+  const datePlace = data.slice(size-2,size).map((element) => {
+    var { Lugar = 0 } = element;
+    var data = Lugar.toString();
+    return data;
+  });
+
+  const dateProy = data.slice(size-2,size).map((element) => {
+    var { Proyecto = 0 } = element;
+    var data = Proyecto.toString();
+    return data;
+  });
+
+  /*
+  const dateName = data.slice(size-2,size).map((element) => {
+    var { Nombre = 0 } = element;
+    var data2 = Nombre.toString();
+    return data2;
+  });
+
+  const datePermisos = data.slice(size-2,size).map((element) => {
+    var { Rol = 0 } = element;
+    var data2 = Rol.toString();
+    return data2;
+  });
+*/
+
   return (
     <>
-      <div className="content">
-        <Row>
-          <Col md="8">
+
+  <div className="content">
+  <Row>     
             <Card>
               <CardHeader>
-                <h5 className="title">Edit Profile</h5>
+                <CardTitle tag="h4">Usuarios inscritos</CardTitle>
               </CardHeader>
               <CardBody>
-                <Form>
-                  <Row>
-                    <Col className="pr-md-1" md="5">
-                      <FormGroup>
-                        <label>Company (disabled)</label>
-                        <Input
-                          defaultValue="Creative Code Inc."
-                          disabled
-                          placeholder="Company"
-                          type="text"
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col className="px-md-1" md="3">
-                      <FormGroup>
-                        <label>Username</label>
-                        <Input
-                          defaultValue="michael23"
-                          placeholder="Username"
-                          type="text"
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col className="pl-md-1" md="4">
-                      <FormGroup>
-                        <label htmlFor="exampleInputEmail1">
-                          Email address
-                        </label>
-                        <Input placeholder="mike@email.com" type="email" />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col className="pr-md-1" md="6">
-                      <FormGroup>
-                        <label>First Name</label>
-                        <Input
-                          defaultValue="Mike"
-                          placeholder="Company"
-                          type="text"
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col className="pl-md-1" md="6">
-                      <FormGroup>
-                        <label>Last Name</label>
-                        <Input
-                          defaultValue="Andrew"
-                          placeholder="Last Name"
-                          type="text"
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col md="12">
-                      <FormGroup>
-                        <label>Address</label>
-                        <Input
-                          defaultValue="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09"
-                          placeholder="Home Address"
-                          type="text"
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col className="pr-md-1" md="4">
-                      <FormGroup>
-                        <label>City</label>
-                        <Input
-                          defaultValue="Mike"
-                          placeholder="City"
-                          type="text"
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col className="px-md-1" md="4">
-                      <FormGroup>
-                        <label>Country</label>
-                        <Input
-                          defaultValue="Andrew"
-                          placeholder="Country"
-                          type="text"
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col className="pl-md-1" md="4">
-                      <FormGroup>
-                        <label>Postal Code</label>
-                        <Input placeholder="ZIP Code" type="number" />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col md="8">
-                      <FormGroup>
-                        <label>About Me</label>
-                        <Input
-                          cols="80"
-                          defaultValue="Lamborghini Mercy, Your chick she so thirsty, I'm in
-                            that two seat Lambo."
-                          placeholder="Here can be your description"
-                          rows="4"
-                          type="textarea"
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                </Form>
+                <Table className="tablesorter" responsive>
+                  <thead className="text-primary">
+                    <tr>
+                      <th>Nombre usuario</th>
+                      <th>Correo</th>
+                      <th>Permisos</th>
+                      <th>Proyecto</th>
+                      <th>Locacion</th>
+                      <th>Administrador del proyecto</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                      <th>Nathalia Pedreros</th>
+                      <th>npedrerosl@gmail.com</th>
+                      <th>Monitoreo</th>
+                      <th>{dateProy}</th>
+                      <th>{datePlace}</th>
+                      <th>{dateAdmin}</th>
+                    </tr>
+                  </tbody>
+                </Table>
               </CardBody>
-              <CardFooter>
-                <Button className="btn-fill" color="primary" type="submit">
-                  Save
-                </Button>
-              </CardFooter>
             </Card>
-          </Col>
-          <Col md="4">
-            <Card className="card-user">
-              <CardBody>
-                <CardText />
-                <div className="author">
-                  <div className="block block-one" />
-                  <div className="block block-two" />
-                  <div className="block block-three" />
-                  <div className="block block-four" />
-                  <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                    <img
-                      alt="..."
-                      className="avatar"
-                      src={require("assets/img/emilyz.jpg").default}
-                    />
-                    <h5 className="title">Mike Andrew</h5>
-                  </a>
-                  <p className="description">Ceo/Co-Founder</p>
-                </div>
-                <div className="card-description">
-                  Do not be scared of the truth because we need to restart the
-                  human foundation in truth And I love you like Kanye loves
-                  Kanye I love Rick Owens’ bed design but the back is...
-                </div>
-              </CardBody>
-              <CardFooter>
-                <div className="button-container">
-                  <Button className="btn-icon btn-round" color="facebook">
-                    <i className="fab fa-facebook" />
-                  </Button>
-                  <Button className="btn-icon btn-round" color="twitter">
-                    <i className="fab fa-twitter" />
-                  </Button>
-                  <Button className="btn-icon btn-round" color="google">
-                    <i className="fab fa-google-plus" />
-                  </Button>
-                </div>
-              </CardFooter>
-            </Card>
-          </Col>
         </Row>
-      </div>
-    </>
+
+        <Button>
+          <span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
+             Nuevo usuario
+          </span>
+          <span className="d-block d-sm-none">
+             <i className="tim-icons icon-single-02" />
+          </span>
+        </Button>
+  </div>
+  
+  </>
+    
   );
 }
 

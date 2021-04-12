@@ -1,6 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 // react plugin for creating notifications over the dashboard
 import NotificationAlert from "react-notification-alert";
+// nodejs library that concatenates classes
+import classNames from "classnames";
+// react plugin used to create charts
+import { Line, Bar } from "react-chartjs-2";
 
 // reactstrap components
 import {
@@ -10,12 +14,77 @@ import {
   Card,
   CardHeader,
   CardBody,
+  Table,
   CardTitle,
   Row,
   Col,
 } from "reactstrap";
 
+import {
+  chartExample2,
+  chartExample3,
+  chartExample4,
+} from "variables/charts.js";
+import fire from "../firebase";
+
 function Notifications() {
+
+  const [data, setData] = useState([]);
+
+  const ref = fire.firestore().collection("primerPiso");
+
+  const getData = () => {
+    ref.onSnapshot((querySnapshot) => {
+      const items = [];
+      querySnapshot.forEach((doc) => {
+        items.push(doc.data());
+      });
+      setData(items);
+    });
+  };
+
+ 
+
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const size = data.length + 1;
+  console.log(size)
+
+  const dateList = data.slice(size-2,size).map((element) => {
+    const { Fecha: { seconds = 0 } = {} } = element;
+    const dateObject = new Date(seconds * 1000);
+    const humanDateFormat = [dateObject.toLocaleString()];
+
+    return humanDateFormat;
+  });
+  
+  const dateGas = data.slice(size-2,size).map((element) => {
+    var { Gas = 0 } = element;
+    var data = Gas.toString();
+    return data;
+  });
+
+  const dateTemperatura = data.slice(size-2,size).map((element) => {
+    var { Temperatura = 0 } = element;
+    var data = Temperatura.toString();
+    return data;
+  });
+
+  const dateHumedadAmb = data.slice(size-2,size).map((element) => {
+    var { HumedadAmb = 0 } = element;
+    var data = HumedadAmb.toString();
+    return data;
+  });
+
+  const dateHumedadSuelo = data.slice(size-2,size).map((element) => {
+    var { HumedadSuelo = 0 } = element;
+    var data = HumedadSuelo.toString();
+    return data;
+  });
+
   const notificationAlertRef = React.useRef(null);
   const notify = (place) => {
     var color = Math.floor(Math.random() * 5 + 1);
@@ -58,7 +127,9 @@ function Notifications() {
   };
   return (
     <>
+    
       <div className="content">
+
         <div className="react-notification-alert-container">
           <NotificationAlert ref={notificationAlertRef} />
         </div>
@@ -66,151 +137,84 @@ function Notifications() {
           <Col md="6">
             <Card>
               <CardHeader>
-                <CardTitle tag="h4">Notifications Style</CardTitle>
+                <CardTitle tag="h4">Estado de las variables</CardTitle>
               </CardHeader>
               <CardBody>
-                <Alert color="info">
-                  <span>This is a plain notification</span>
-                </Alert>
-                <UncontrolledAlert color="info">
-                  <span>This is a notification with close button.</span>
-                </UncontrolledAlert>
                 <UncontrolledAlert className="alert-with-icon" color="info">
                   <span className="tim-icons icon-bell-55" data-notify="icon" />
                   <span data-notify="message">
-                    This is a notification with close button and icon.
+                    La variable de gas en el primer piso se encuentra en {dateGas} ppm.
                   </span>
                 </UncontrolledAlert>
+
                 <UncontrolledAlert className="alert-with-icon" color="info">
                   <span className="tim-icons icon-bell-55" data-notify="icon" />
                   <span data-notify="message">
-                    This is a notification with close button and icon and have
-                    many lines. You can see that the icon and the close button
-                    are always vertically aligned. This is a beautiful
-                    notification. So you don't have to worry about the style.
+                    La temperatura en el primer piso se encuentra sobre los {dateTemperatura} grados centigrados.
                   </span>
                 </UncontrolledAlert>
+
+                <UncontrolledAlert className="alert-with-icon" color="info">
+                  <span className="tim-icons icon-bell-55" data-notify="icon" />
+                  <span data-notify="message">
+                    La humedad del ambiente en el segundo piso es {dateHumedadAmb} %.
+                  </span>
+                </UncontrolledAlert>
+
+                <UncontrolledAlert className="alert-with-icon" color="info">
+                  <span className="tim-icons icon-bell-55" data-notify="icon" />
+                  <span data-notify="message">
+                    Se registra una humedad del {dateHumedadSuelo} % en el compost.
+                  </span>
+                </UncontrolledAlert>
+          
               </CardBody>
             </Card>
           </Col>
+
+
+
+
           <Col md="6">
             <Card>
               <CardHeader>
-                <CardTitle tag="h4">Notification states</CardTitle>
+                <CardTitle tag="h4">Notificaciones y alertas</CardTitle>
               </CardHeader>
               <CardBody>
                 <UncontrolledAlert color="primary">
                   <span>
                     <b>Primary - </b>
-                    This is a regular notification made with ".alert-primary"
+                    La variable de gas en el primer piso simboliza un riesgo para el cultivo con 
                   </span>
                 </UncontrolledAlert>
                 <UncontrolledAlert color="info">
                   <span>
                     <b>Info - </b>
-                    This is a regular notification made with ".alert-info"
-                  </span>
+                    Para la fecha: {dateList} el estado de las variables son:
+                    Temperatura: {dateTemperatura} grados centigrados, 
+                    Humedad del suelo: {dateHumedadSuelo} %, 
+                    Humedad del ambiente: {dateHumedadAmb} %, 
+                    Gas: {dateGas} ppm.
+                    </span>
                 </UncontrolledAlert>
                 <UncontrolledAlert color="success">
                   <span>
                     <b>Success - </b>
-                    This is a regular notification made with ".alert-success"
+                    La temperatura ambiente en el segundo piso es estable y esta dentro de los lineamientos de la etapa productiva del champiñon ({dateTemperatura} grados centigrados) 
                   </span>
                 </UncontrolledAlert>
                 <UncontrolledAlert color="warning">
                   <span>
                     <b>Warning - </b>
-                    This is a regular notification made with ".alert-warning"
+                      La variable de gas en el primer piso simboliza un riesgo para el cultivo con {dateGas} ppm.
                   </span>
                 </UncontrolledAlert>
                 <UncontrolledAlert color="danger">
                   <span>
                     <b>Danger - </b>
-                    This is a regular notification made with ".alert-danger"
+                    La humedad supera un 10% la permitida dentro del sistema, por favor revise los suministros de ventilacion y corrija el margen de error. Temperatura: {dateTemperatura} grados centigrados. 
                   </span>
                 </UncontrolledAlert>
-              </CardBody>
-            </Card>
-          </Col>
-          <Col md="12">
-            <Card>
-              <CardBody>
-                <div className="places-buttons">
-                  <Row>
-                    <Col className="ml-auto mr-auto text-center" md="6">
-                      <CardTitle tag="h4">
-                        Notifications Places
-                        <p className="category">Click to view notifications</p>
-                      </CardTitle>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col className="ml-auto mr-auto" lg="8">
-                      <Row>
-                        <Col md="4">
-                          <Button
-                            block
-                            color="primary"
-                            onClick={() => notify("tl")}
-                          >
-                            Top Left
-                          </Button>
-                        </Col>
-                        <Col md="4">
-                          <Button
-                            block
-                            color="primary"
-                            onClick={() => notify("tc")}
-                          >
-                            Top Center
-                          </Button>
-                        </Col>
-                        <Col md="4">
-                          <Button
-                            block
-                            color="primary"
-                            onClick={() => notify("tr")}
-                          >
-                            Top Right
-                          </Button>
-                        </Col>
-                      </Row>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col className="ml-auto mr-auto" lg="8">
-                      <Row>
-                        <Col md="4">
-                          <Button
-                            block
-                            color="primary"
-                            onClick={() => notify("bl")}
-                          >
-                            Bottom Left
-                          </Button>
-                        </Col>
-                        <Col md="4">
-                          <Button
-                            block
-                            color="primary"
-                            onClick={() => notify("bc")}
-                          >
-                            Bottom Center
-                          </Button>
-                        </Col>
-                        <Col md="4">
-                          <Button
-                            block
-                            color="primary"
-                            onClick={() => notify("br")}
-                          >
-                            Bottom Right
-                          </Button>
-                        </Col>
-                      </Row>
-                    </Col>
-                  </Row>
-                </div>
               </CardBody>
             </Card>
           </Col>
