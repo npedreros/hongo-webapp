@@ -25,6 +25,7 @@ import {
   Row,
   Col,
 } from "reactstrap";
+import { isPropertyDeclaration } from "typescript";
 
 
 function UserProfile() {
@@ -46,9 +47,8 @@ function UserProfile() {
                       <FormGroup>
                         <label>Proyecto</label>
                         <Input
-                          defaultValue="Creative Code Inc."
-                          disabled
-                          placeholder="Company"
+                          defaultValue="Champiñones"
+                          placeholder="Proyecto"
                           type="text"
                         />
                       </FormGroup>
@@ -57,7 +57,6 @@ function UserProfile() {
                       <FormGroup>
                         <label>Nickname</label>
                         <Input
-                          defaultValue="michael23"
                           placeholder="Username"
                           type="text"
                         />
@@ -77,8 +76,7 @@ function UserProfile() {
                       <FormGroup>
                         <label>Nombre</label>
                         <Input
-                          defaultValue="Mike"
-                          placeholder="Company"
+                          placeholder="Nombre"
                           type="text"
                         />
                       </FormGroup>
@@ -87,8 +85,7 @@ function UserProfile() {
                       <FormGroup>
                         <label>Apellido</label>
                         <Input
-                          defaultValue="Andrew"
-                          placeholder="Last Name"
+                          placeholder="Apellido"
                           type="text"
                         />
                       </FormGroup>
@@ -101,8 +98,17 @@ function UserProfile() {
                       <FormGroup>
                         <label>Rol</label>
                         <Input
-                          defaultValue="Mike"
-                          placeholder="City"
+                          defaultValue="Monitoreo"
+                          placeholder="Rol"
+                          type="text"
+                        />
+                      </FormGroup>
+                    </Col>
+                    <Col className="pr-md-1" md="4">
+                      <FormGroup>
+                        <label>Contraseña</label>
+                        <Input
+                          placeholder="Pass"
                           type="text"
                         />
                       </FormGroup>
@@ -113,8 +119,10 @@ function UserProfile() {
               <CardFooter>
                 <Button className="btn-fill" color="primary" type="submit">
                   Crear Usuario
+                   
+
                 </Button>
-                <Button className="btn-fill" color="primary" type="submit">
+                <Button className="btn-fill" color="primary" type="reset">
                   Cancelar
                 </Button>
               </CardFooter>
