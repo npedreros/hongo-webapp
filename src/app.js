@@ -54,29 +54,9 @@ const App = () => {
         }
       });
   };
-/*
-  const hanldeSingUp = () => {
-    clearErrors();
-    fire
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then((user) => {
-        console.log(user);
-      })
-      .catch((error) => {
-        switch (error.code) {
-          case "auth/invalid-email":
-          case "auth/user-disabled":
-          case "auth/user-not-found":
-            setEmailError(error.message);
-            break;
-          case "auth/wrong-password":
-            setPasswordError(error.message);
-            break;
-        }
-      });
-  };
-*/
+
+  
+
   const handleLogout = () => {
     fire
       .auth()
