@@ -189,7 +189,7 @@ function Dashboard(props) {
             ? dateHumedadAmb
             : bigChartData === "HumedadSuelo"
             ? dateHumedadSuelo
-            : bigChartData === "Corrinete"
+            : bigChartData === "Corriente"
             ? dateCorriente
             : dateAgua;
         //Validador de descripcion de datos
@@ -203,7 +203,7 @@ function Dashboard(props) {
             : bigChartData === "HumedadSuelo"
             ? "Humedad del suelo"
             : bigChartData === "Corriente"
-            ? "Consumo de corrinete"
+            ? "Consumo de corriente"
             : "Consumo de agua";
         return {
           labels: dateList,
