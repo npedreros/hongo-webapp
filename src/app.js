@@ -106,6 +106,7 @@ const App = () => {
   useEffect(() => {
     authListener();
   }, []);
+
   return (
     <ThemeContextWrapper>
       <BackgroundColorWrapper>
@@ -116,7 +117,7 @@ const App = () => {
                 <Route
                   path="/admin"
                   render={(props) => (
-                    <AdminLayout {...props} handleLogout={handleLogout} />
+                    <AdminLayout {...props} datauser={user} handleLogout={handleLogout} />
                   )}
                 />
                 <Redirect from="/" to="/admin" />
