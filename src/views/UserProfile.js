@@ -29,59 +29,62 @@ import {
 function UserProfile() {
 
   const [data, setData] = useState([]);
+  const [data2, setData2] = useState([]);
 
-  const ref = fire.firestore().collection("Proyectos");
   const ref2 = fire.firestore().collection("Usuarios");
-  
+  const ref = fire.firestore().collection("Proyectos");
+  //Traer datos dde firebase de usuarios
   const getData = () => {
+    ref2.onSnapshot((querySnapshot) => {
+      const items = [];
+      querySnapshot.forEach((doc) => {
+
+        items.push(doc.data());
+      });
+      setData(items);
+    });
+  };
+//Traer datos dde firebase de proeyctos
+  const getData2 = () => {
     ref.onSnapshot((querySnapshot) => {
       const items = [];
       querySnapshot.forEach((doc) => {
         items.push(doc.data());
       });
-      setData(items);
+      setData2(items);
     });
-
   };
 
   useEffect(() => {
+    getData2();
     getData();
   }, []);
 
-  const size = data.length + 1;
-  console.log(size)
-
-  const dateAdmin = data.slice(size-2,size).map((element) => {
-    var { Administrador = 0 } = element;
-    var data = Administrador.toString();
-    return data;
+  //Carga de usuarios
+const datauser = data.map((element) => {
+  var { Correo = 0,Nombre=0,Proyecto=0,Rol=0} = element;
+  // Carga de proyectos a los que pertenece el usuario, con un filter
+  const proyects = data2.filter(proyecto =>  proyecto.ID == Proyecto).map((el) =>{
+    var { Proyecto } = el;
+    return (
+      <>
+      <span>
+      - {Proyecto} 
+      </span>
+      <br/>
+      </>
+      );
   });
 
-  const datePlace = data.slice(size-2,size).map((element) => {
-    var { Lugar = 0 } = element;
-    var data = Lugar.toString();
-    return data;
-  });
-
-  const dateProy = data.slice(size-2,size).map((element) => {
-    var { Proyecto = 0 } = element;
-    var data = Proyecto.toString();
-    return data;
-  });
-
-  /*
-  const dateName = data.slice(size-2,size).map((element) => {
-    var { Nombre = 0 } = element;
-    var data2 = Nombre.toString();
-    return data2;
-  });
-
-  const datePermisos = data.slice(size-2,size).map((element) => {
-    var { Rol = 0 } = element;
-    var data2 = Rol.toString();
-    return data2;
-  });
-*/
+  return(
+    <tr>
+      <td>{Nombre}</td>
+      <td>{Correo}</td>
+      <td>{proyects}</td>
+      <td>{Rol}</td>
+    </tr>
+  )
+});
 
   return (
     <>
@@ -98,21 +101,12 @@ function UserProfile() {
                     <tr>
                       <th>Nombre usuario</th>
                       <th>Correo</th>
-                      <th>Permisos</th>
                       <th>Proyecto</th>
-                      <th>Locacion</th>
-                      <th>Administrador del proyecto</th>
+                      <th>Rol</th>
                     </tr>
                   </thead>
                   <tbody>
-                  <tr>
-                      <th>Nathalia Pedreros</th>
-                      <th>npedrerosl@gmail.com</th>
-                      <th>Monitoreo</th>
-                      <th>{dateProy}</th>
-                      <th>{datePlace}</th>
-                      <th>{dateAdmin}</th>
-                    </tr>
+                    {datauser}
                   </tbody>
                 </Table>
               </CardBody>

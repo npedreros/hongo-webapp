@@ -70,7 +70,7 @@ function Dashboard(props) {
   });
 
   const dataTable = data.slice(size-10,size).map((element) => {
-    var { Gas = 0, Fecha: { seconds = 0 } = {}, Temperatura = 0,  HumedadAmb = 0, HumedadSuelo = 0  } = element;
+    var { Gas = 0, Fecha: { seconds = 0 } = {}, Temperatura = 0,  HumedadAmb = 0, HumedadSuelo = 0, Corriente = 0, Agua = 0  } = element;
     var dateObject = new Date(seconds * 1000);
     var humanDateFormat = dateObject.toLocaleString();   
     
@@ -81,6 +81,8 @@ function Dashboard(props) {
         <td>{HumedadAmb}</td>
         <td>{HumedadSuelo}</td>
         <td>{Temperatura}</td>
+        <td>{Corriente}</td>
+        <td>{Agua}</td>
       </tr>
     )
   });
@@ -107,6 +109,18 @@ function Dashboard(props) {
   const dateHumedadSuelo = data.map((element) => {
     var { HumedadSuelo = 0 } = element;
     var data = HumedadSuelo.toString();
+    return data;
+  });
+
+  const dateCorriente = data.map((element) => {
+    var { Corriente = 0 } = element;
+    var data = Corriente.toString();
+    return data;
+  });
+
+  const dateAgua = data.map((element) => {
+    var { Agua = 0 } = element;
+    var data = Agua.toString();
     return data;
   });
 
@@ -167,22 +181,30 @@ function Dashboard(props) {
         
         //Validador de datos
         const dataList =
-          bigChartData === "gas"
+              bigChartData === "gas"
             ? dateGas
             : bigChartData === "Temperatura"
             ? dateTemperatura
             : bigChartData === "HumedadAmb"
             ? dateHumedadAmb
-            : dateHumedadSuelo;
+            : bigChartData === "HumedadSuelo"
+            ? dateHumedadSuelo
+            : bigChartData === "Corrinete"
+            ? dateCorriente
+            : dateAgua;
         //Validador de descripcion de datos
         const dataLabel =
-          bigChartData === "gas"
+              bigChartData === "gas"
             ? "Nivel de gas"
             : bigChartData === "Temperatura"
             ? "Grados"
             : bigChartData === "HumedadAmb"
             ? "Humedad"
-            : "Humedad del suelo";
+            : bigChartData === "HumedadSuelo"
+            ? "Humedad del suelo"
+            : bigChartData === "Corriente"
+            ? "Consumo de corrinete"
+            : "Consumo de agua";
         return {
           labels: dateList,
           datasets: [
@@ -296,6 +318,40 @@ function Dashboard(props) {
                           <i className="tim-icons icon-tap-02" />
                         </span>
                       </Button>
+                      <Button
+                        color="info"
+                        id="4"
+                        size="sm"
+                        tag="label"
+                        className={classNames("btn-simple", {
+                          active: bigChartData === "Corriente",
+                        })}
+                        onClick={() => setBgChartData("Corriente")}
+                      >
+                        <span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
+                          Consumo de corrinete
+                        </span>
+                        <span className="d-block d-sm-none">
+                          <i className="tim-icons icon-tap-02" />
+                        </span>
+                      </Button>
+                      <Button
+                        color="info"
+                        id="5"
+                        size="sm"
+                        tag="label"
+                        className={classNames("btn-simple", {
+                          active: bigChartData === "Agua",
+                        })}
+                        onClick={() => setBgChartData("Agua")}
+                      >
+                        <span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
+                          Consumo de agua
+                        </span>
+                        <span className="d-block d-sm-none">
+                          <i className="tim-icons icon-tap-02" />
+                        </span>
+                      </Button>
                     </ButtonGroup>
                   </Col>
                 </Row>
@@ -323,6 +379,8 @@ function Dashboard(props) {
                       <th>Humedad del Ambiente</th>
                       <th>Humedad del Suelo</th>
                       <th>Temperatura</th>
+                      <th>Consumo de Corriente</th>
+                      <th>Consumo de Agua</th>
                     </tr>
                   </thead>
                   <tbody>

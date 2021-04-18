@@ -26,12 +26,11 @@ import {
   Col,
 } from "reactstrap";
 import { isPropertyDeclaration } from "typescript";
-
+import fire from "../firebase";
 
 function UserProfile() {
     return (
       <>
-
     <div className="content">
 
         <Row>
@@ -49,15 +48,6 @@ function UserProfile() {
                         <Input
                           defaultValue="Champiñones"
                           placeholder="Proyecto"
-                          type="text"
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col className="px-md-1" md="3">
-                      <FormGroup>
-                        <label>Nickname</label>
-                        <Input
-                          placeholder="Username"
                           type="text"
                         />
                       </FormGroup>
@@ -81,15 +71,6 @@ function UserProfile() {
                         />
                       </FormGroup>
                     </Col>
-                    <Col className="pl-md-1" md="6">
-                      <FormGroup>
-                        <label>Apellido</label>
-                        <Input
-                          placeholder="Apellido"
-                          type="text"
-                        />
-                      </FormGroup>
-                    </Col>
                   </Row>
                   <Row>
                   </Row>
@@ -109,7 +90,7 @@ function UserProfile() {
                         <label>Contraseña</label>
                         <Input
                           placeholder="Pass"
-                          type="text"
+                          type="password"
                         />
                       </FormGroup>
                     </Col>
