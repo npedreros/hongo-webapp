@@ -1,10 +1,8 @@
 import Dashboard from "views/Dashboard.js";
 import Notifications from "views/Notifications.js";
-import TableList from "views/TableList.js";
-import UserProfile from "views/UserProfile.js";
-import Registro from "views/Registro.js";
 
-var routes = [
+
+var routesUser = [
   {
     path: "/dashboard",
     name: "Inicio",
@@ -18,8 +16,7 @@ var routes = [
     icon: "tim-icons icon-bell-55",
     component: Notifications,
     layout: "/admin",
-  },
-
+  }
   
   /*
   {
@@ -40,4 +37,4 @@ var routes = [
     layout: "/admin",
   },*/
 ];
-export default routes;
+export default routesUser;
