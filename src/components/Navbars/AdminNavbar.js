@@ -1,7 +1,11 @@
-import React from "react";
-// nodejs library that concatenates classes
-import classNames from "classnames";
 
+//import React from "react";
+// nodejs library that concatenates classes
+
+import classNames from "classnames";
+import React, { useState, useEffect } from "react";
+
+import fire from "../../firebase";
 // reactstrap components
 import {
   Collapse,
@@ -19,12 +23,70 @@ import {
   NavbarToggler,
   ModalHeader,
 } from "reactstrap";
+import Login from "views/Login";
 
 function AdminNavbar(props) {
   const { handleLogout } = props;
   const [collapseOpen, setcollapseOpen] = React.useState(false);
   const [modalSearch, setmodalSearch] = React.useState(false);
   const [color, setcolor] = React.useState("navbar-transparent");
+
+  const [data, setData] = useState([]);
+  const [data2, setData2] = useState([]);
+
+  const ref2 = fire.firestore().collection("Usuarios");
+  const ref = fire.firestore().collection("Proyectos");
+
+  //Traer datos de firebase de usuarios
+  const getData = () => {
+    ref2.onSnapshot((querySnapshot) => {
+      const items = [];
+      querySnapshot.forEach((doc) => {
+
+        items.push(doc.data());
+      });
+      setData(items);
+    });
+  };
+//Traer datos de firebase de proyectos
+  const getData2 = () => {
+    ref.onSnapshot((querySnapshot) => {
+      const items = [];
+      querySnapshot.forEach((doc) => {
+        items.push(doc.data());
+      });
+      setData2(items);
+    });
+  };
+
+  useEffect(() => {
+    getData();
+    getData2();
+  }, []);
+
+  var userr = fire.auth().currentUser;
+  var email;
+  email= userr.email;
+
+  const Datauser = data.map((element) => {
+    var { Correo = 0} = element;
+    // Carga de proyectos a los que pertenece el usuario, con un filter
+    const datauser = data.filter( Nombre =>  Correo === email).map((elll) =>{
+      var { Nombre = ""} = elll;
+      return (
+        <>
+        <span>
+          {Nombre} 
+        </span>
+        </>
+        );
+    });
+
+    return(
+      datauser
+    );
+  });
+
   React.useEffect(() => {
     window.addEventListener("resize", updateColor);
     // Specify how to clean up after this effect:
@@ -94,11 +156,11 @@ function AdminNavbar(props) {
                     />
                   </div>
                   <b className="caret d-none d-lg-block d-xl-block" />
-                  <p className="d-lg-none">Log out</p>
+                  <p className="d-lg-none">{email}</p>
                 </DropdownToggle>
                 <DropdownMenu className="dropdown-navbar" right tag="ul">
                   <NavLink tag="li">
-                    <DropdownItem className="nav-item">Perfil</DropdownItem>
+                    <DropdownItem className="nav-item">{Datauser}</DropdownItem>
                   </NavLink>
                   <DropdownItem divider tag="li" />
                   <NavLink tag="li" onClick={handleLogout}>
