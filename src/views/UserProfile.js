@@ -33,7 +33,7 @@ function UserProfile() {
 
   const ref2 = fire.firestore().collection("Usuarios");
   const ref = fire.firestore().collection("Proyectos");
-  //Traer datos dde firebase de usuarios
+  //Traer datos de firebase de usuarios
   const getData = () => {
     ref2.onSnapshot((querySnapshot) => {
       const items = [];
@@ -44,7 +44,7 @@ function UserProfile() {
       setData(items);
     });
   };
-//Traer datos dde firebase de proeyctos
+//Traer datos de firebase de proyectos
   const getData2 = () => {
     ref.onSnapshot((querySnapshot) => {
       const items = [];
@@ -65,11 +65,22 @@ const datauser = data.map((element) => {
   var { Correo = 0,Nombre=0,Proyecto=0,Rol=0} = element;
   // Carga de proyectos a los que pertenece el usuario, con un filter
   const proyects = data2.filter(proyecto =>  proyecto.ID == Proyecto).map((el) =>{
-    var { Proyecto } = el;
+    var { Proyecto = ""} = el;
     return (
       <>
       <span>
       - {Proyecto} 
+      </span>
+      <br/>
+      </>
+      );
+  });
+  const logage = data2.filter(proyecto =>  proyecto.ID == Proyecto).map((ell) =>{
+    var { Lugar = "" } = ell;
+    return (
+      <>
+      <span>
+      {Lugar} 
       </span>
       <br/>
       </>
@@ -82,6 +93,7 @@ const datauser = data.map((element) => {
       <td>{Correo}</td>
       <td>{proyects}</td>
       <td>{Rol}</td>
+      <td>{logage}</td>
     </tr>
   )
 });
@@ -103,6 +115,7 @@ const datauser = data.map((element) => {
                       <th>Correo</th>
                       <th>Proyecto</th>
                       <th>Rol</th>
+                      <th>Lugar</th>
                     </tr>
                   </thead>
                   <tbody>
