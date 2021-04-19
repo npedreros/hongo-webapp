@@ -156,11 +156,11 @@ function AdminNavbar(props) {
                     />
                   </div>
                   <b className="caret d-none d-lg-block d-xl-block" />
-                  <p className="d-lg-none">{email}</p>
+                  <p className="d-lg-none">Usuario</p>
                 </DropdownToggle>
                 <DropdownMenu className="dropdown-navbar" right tag="ul">
                   <NavLink tag="li">
-                    <DropdownItem className="nav-item">{Datauser}</DropdownItem>
+                    <DropdownItem className="nav-item">{email}</DropdownItem>
                   </NavLink>
                   <DropdownItem divider tag="li" />
                   <NavLink tag="li" onClick={handleLogout}>
