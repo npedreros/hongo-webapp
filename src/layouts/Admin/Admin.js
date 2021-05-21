@@ -1,9 +1,9 @@
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Route, Switch, Redirect, useLocation } from "react-router-dom";
 // javascript plugin used to create scrollbars on windows
 import PerfectScrollbar from "perfect-scrollbar";
-
+import fire from "../../firebase";
 // core components
 import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import Footer from "components/Footer/Footer.js";
@@ -11,17 +11,76 @@ import Sidebar from "components/Sidebar/Sidebar.js";
 
 import routes from "routes.js";
 
+import routesUser from "routesUser.js";
+
 import logo from "assets/img/react-logo.png";
 import { BackgroundColorContext } from "contexts/BackgroundColorContext";
 
 var ps;
+var Rou;
+
+
 
 function Admin(props) {
+
   const location = useLocation();
   const mainPanelRef = React.useRef(null);
   const [sidebarOpened, setsidebarOpened] = React.useState(
     document.documentElement.className.indexOf("nav-open") !== -1
   );
+  const [data, setData] = useState([]);
+  const [data2, setData2] = useState([]);
+
+  const ref2 = fire.firestore().collection("Usuarios");
+  const ref = fire.firestore().collection("Proyectos");
+  //Traer datos de firebase de usuarios
+  const getData = () => {
+    ref2.onSnapshot((querySnapshot) => {
+      const items = [];
+      querySnapshot.forEach((doc) => {
+
+        items.push(doc.data());
+      });
+      setData(items);
+    });
+  };
+//Traer datos de firebase de proyectos
+  const getData2 = () => {
+    ref.onSnapshot((querySnapshot) => {
+      const items = [];
+      querySnapshot.forEach((doc) => {
+        items.push(doc.data());
+      });
+      setData2(items);
+    });
+  };
+
+  useEffect(() => {
+    getData2();
+    getData();
+  }, []);
+  var userr = fire.auth().currentUser;
+  var email;
+  email= userr.email;
+
+  var rol;
+  const datauser = data.map((element) => {
+    var { Correo = 0,Nombre=0,Proyecto=0,Rol=0} = element;
+    // Carga de proyectos a los que pertenece el usuario, con un filter
+    console.log(Correo);
+    if( Correo == email ){
+      rol=Rol;
+    }
+    return rol;
+  });
+
+  if(rol == "Monitoreo"){
+    Rou=routes ;                  // Rol de usaurio o administrador 
+  }
+  else{
+    Rou=routesUser;
+  }
+
   React.useEffect(() => {
     if (navigator.platform.indexOf("Win") > -1) {
       document.documentElement.className += " perfect-scrollbar-on";
@@ -61,8 +120,9 @@ function Admin(props) {
     document.documentElement.classList.toggle("nav-open");
     setsidebarOpened(!sidebarOpened);
   };
+
   const getRoutes = (routes) => {
-    return routes.map((prop, key) => {
+    return Rou.map((prop, key) => {
       if (prop.layout === "/admin") {
         return (
           <Route
@@ -77,9 +137,9 @@ function Admin(props) {
     });
   };
   const getBrandText = (path) => {
-    for (let i = 0; i < routes.length; i++) {
-      if (location.pathname.indexOf(routes[i].layout + routes[i].path) !== -1) {
-        return routes[i].name;
+    for (let i = 0; i < Rou.length; i++) {
+      if (location.pathname.indexOf(Rou[i].layout + Rou[i].path) !== -1) {
+        return Rou[i].name;
       }
     }
     return "Brand";
@@ -92,9 +152,9 @@ function Admin(props) {
           <div className="wrapper">
             {pathLocation !== "/login" ? (
               <Sidebar
-              routes={routes}
+              routes={Rou}
               logo={{
-                outterLink: "https://www.creative-tim.com/",
+                outterLink: "https://hongoapp.web.app/",
                 text: "Hongo App",
                 imgSrc: logo,
               }}
