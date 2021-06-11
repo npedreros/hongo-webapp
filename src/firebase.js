@@ -7,6 +7,7 @@ import "firebase/firestore";
 var firebaseConfig = {
   apiKey: "AIzaSyCFvTE96Did9USBxP6sszgQIE_f73W94hI",
   authDomain: "hongoapp.firebaseapp.com",
+  databaseURL: "https://hongoapp-default-rtdb.firebaseio.com",
   projectId: "hongoapp",
   storageBucket: "hongoapp.appspot.com",
   messagingSenderId: "48567051935",
